@@ -82,19 +82,25 @@ class WorkoutPlan(Base):
 
     exercises = relationship('Exercise', secondary="plan_exercise", backref="workout_plan")
 
-    def __init__(self, id, name, created_by, date_created):
-        self.id = id 
-        self.name = name
-        self.created_by = created_by
-        self.date_created = date_created
-
     def __repr__(self):
         return f"Workout Plan ID: {self.id}, Name: {self.name}"
     
     def create_workout_plan(self):
-        workout_plan = WorkoutPlan(self.id, self.name, self.created_by, self.date_created)
-        session.add(workout_plan)
+        session.add(self)
         session.commit()
+
+    @classmethod
+    def select_workout_plan(name):
+        # Query Workout Plan by Name
+        workout_plan = session.query(WorkoutPlan).filter_by(name=name).first()
+        return workout_plan
+
+    def update_workout_plan():
+        pass
+
+    def delete_workout_plan():
+        pass
+
 
 current_time = datetime.datetime.now()
 
