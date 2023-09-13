@@ -1,12 +1,12 @@
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import Column, Integer, String, DateTime, ForeignKey, create_engine, select
 from sqlalchemy.orm import sessionmaker, relationship
+from sqlalchemy.sql import func
 import datetime
 
 Base = declarative_base()
-
 engine = create_engine("postgresql+psycopg2://postgres:admin@localhost/new_gymapp", echo=True)
-Base.metadata.create_all(bind=engine)
+
 
 # This session will be responsible for handling database connections
 Session = sessionmaker(bind=engine)
@@ -25,7 +25,7 @@ class Exercise(Base):
     name = Column("name", String)
     target_area = Column("target_area", String)
     difficulty = Column("difficulty", String)
-    time_created = Column("time_created", DateTime)
+    time_created = Column("time_created", DateTime(timezone=True), server_default=func.now())
 
     def __repr__(self):
         return f"ID: ({self.id}) Exercise: {self.name}"
@@ -78,7 +78,7 @@ class WorkoutPlan(Base):
     id = Column("id", Integer, primary_key=True)
     name = Column("name", String)
     created_by = Column("created_by", String)
-    date_created = Column("date_created", DateTime)
+    date_created = Column("date_created", DateTime(timezone=True), server_default=func.now())
 
     exercises = relationship('Exercise', secondary="plan_exercise", backref="workout_plan")
 
@@ -90,7 +90,7 @@ class WorkoutPlan(Base):
         session.commit()
 
     @classmethod
-    def select_workout_plan(name):
+    def select_workout_plan(cls, name):
         # Query Workout Plan by Name
         workout_plan = session.query(WorkoutPlan).filter_by(name=name).first()
         return workout_plan
@@ -101,24 +101,26 @@ class WorkoutPlan(Base):
     def delete_workout_plan():
         pass
 
+    def add_exercises(self, session, exercises):
+        with session:
+            self.exercises = [exercises]
+            session.commit()
+        return "Exercise Added"
 
-current_time = datetime.datetime.now()
 
-# workout_plan = WorkoutPlan(1, "My First Workout Plan", "Gabriel", current_time)
-# workout_plan_2 = WorkoutPlan(2, "My Second Workout Plan", "Franklin", current_time)
-# chest_press = Exercise(1, "Chest Press", "Chest", "Hard", current_time)
-# back_rows = Exercise(2, "Back Rows", "Back", "Easy", current_time)
 
-# exercises =  session.query(Exercise).all()
-# workout_plans = session.query(WorkoutPlan).all()
 
-# print(exercises)
-# print(workout_plans)
+Base.metadata.create_all(bind=engine)
 
-# test_workout_plan = WorkoutPlan(1, "Test Workout", "Gabriel", current_time)
 
-# test_workout_plan.create_workout_plan()
+# workout_plan = WorkoutPlan(name="First Workout Plan", created_by="Gabriel")
 
-# new_exercise = Exercise(1, "Chest Press", "Chest", "Hard", current_time)
+first_plan = WorkoutPlan.select_workout_plan(name="First Workout Plan")
 
+chest_press = Exercise.select_exercise(session=session, exercise_id=1)
+back_rows = Exercise.select_exercise(session=session, exercise_id=3)
+
+# first_plan.exercises = [chest_press, back_rows]
+
+first_plan.add_exercises(session=session, exercises=chest_press)
 
