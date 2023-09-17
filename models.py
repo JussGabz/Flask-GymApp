@@ -1,5 +1,5 @@
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy import Column, Integer, String, DateTime, ForeignKey, create_engine, select
+from sqlalchemy import Column, Integer, String, DateTime, ForeignKey, create_engine
 from sqlalchemy.orm import sessionmaker, relationship
 from sqlalchemy.sql import func
 import datetime
@@ -18,6 +18,14 @@ session = Session()
 #     result = conn.execute(text("select 'hello world'"))
 #     print(result.all())
 
+class PlanExercise(Base):
+    __tablename__ = "plan_exercise"
+
+    exercise_id = Column("exercise_id", ForeignKey("exercises.id"), primary_key=True)
+    plan_id = Column("plan_id", ForeignKey("workout_plan.id"), primary_key=True)
+
+
+
 class Exercise(Base):
     __tablename__ = "exercises"
 
@@ -32,9 +40,9 @@ class Exercise(Base):
     
     # Make as class Method - Helps to call without instantiating
     @classmethod
-    def select_exercise(cls, session, exercise_id):
+    def select_exercise(cls, session, exercise_name):
 
-        exercise = session.get(Exercise, exercise_id)
+        exercise = session.query(Exercise).filter_by(name=exercise_name).first()
         if exercise:
             return exercise
         else:
@@ -64,14 +72,6 @@ class Exercise(Base):
         session.close()
 
 
-class PlanExercise(Base):
-    __tablename__ = "plan_exercise"
-
-    id = Column("id", Integer, primary_key=True)
-    exercise_id = Column("exercise_id", ForeignKey("exercises.id"), primary_key=True)
-    plan_id = Column("plan_id", ForeignKey("workout_plan.id"), primary_key=True)
-
-
 class WorkoutPlan(Base):
     __tablename__ = "workout_plan"
 
@@ -95,32 +95,23 @@ class WorkoutPlan(Base):
         workout_plan = session.query(WorkoutPlan).filter_by(name=name).first()
         return workout_plan
 
-    def update_workout_plan():
-        pass
+    def update_workout_plan(self, session, name):
+        if name:
+            self.name = name
+        
+        session.commit()
+        print("Workout Updated!")
 
-    def delete_workout_plan():
-        pass
+    def delete_workout_plan(self, session):
+        session.delete(self)
+        session.commit()
 
     def add_exercises(self, session, exercises):
         with session:
-            self.exercises = [exercises]
+            self.exercises = exercises
             session.commit()
         return "Exercise Added"
 
-
-
-
+Base.metadata.drop_all(bind=engine)
 Base.metadata.create_all(bind=engine)
-
-
-# workout_plan = WorkoutPlan(name="First Workout Plan", created_by="Gabriel")
-
-first_plan = WorkoutPlan.select_workout_plan(name="First Workout Plan")
-
-chest_press = Exercise.select_exercise(session=session, exercise_id=1)
-back_rows = Exercise.select_exercise(session=session, exercise_id=3)
-
-# first_plan.exercises = [chest_press, back_rows]
-
-first_plan.add_exercises(session=session, exercises=chest_press)
 
