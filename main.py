@@ -1,11 +1,15 @@
-from sqlalchemy import create_engine, text
-from sqlalchemy.orm import sessionmaker
+from flask import Flask
 
-engine = create_engine("postgresql+psycopg2://postgres:admin@localhost/new_gymapp")
+app = Flask(__name__)
 
-# Test connection 
+@app.route("/")
+def hello_world():
+    return "Hello World"
 
-with engine.connect() as conn:
-    result = conn.execute(text("select 'hello world'"))
-    print(result.all())
+@app.route("/exercises")
+def exercises():
+    return "Exercises"
 
+@app.route("/workoutplans")
+def workoutplans():
+    return "Workout Plans"
