@@ -1,12 +1,17 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, inital-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Doccument</title>
-</head>
-<body>
-    <h1>Juss Gym Exercises</h1>
-</body>
-</html>
+{% extends 'base.html' %}
+
+{% block head %}
+
+{% endblock %}
+
+{% block body %}
+<h1> Juss Gym Exercises </h1>
+
+{% for exercise in exercises %}
+
+<p> Exercise Name: {{ exercise.name }} </p>
+<p> Target Area: {{ exercise.target_area }} </p>
+<p> Difficulty: {{ exercise.difficulty }} </p>
+
+{% endfor %}
+{%  endblock %}
