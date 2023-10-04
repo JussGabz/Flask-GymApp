@@ -5,13 +5,29 @@
 {% endblock %}
 
 {% block body %}
-<h1> Juss Gym Exercises </h1>
+<div class="container" style="padding-top: 10px; padding-bottom: 20px;"> 
+    <div style="border: 1px solid black " class="p-md-4 pt-lg-5 pb-xl-3 text-center">
+        <h1> Juss Gym Exercises </h1>
+    </div>
+</div>
 
 {% for exercise in exercises %}
 
-<p> Exercise Name: {{ exercise.name }} </p>
-<p> Target Area: {{ exercise.target_area }} </p>
-<p> Difficulty: {{ exercise.difficulty }} </p>
+<div class="container"> 
+    <div class="row">
+        <div class="col-sm" style="padding-bottom: 10px;">
+            <div style="border: 1px solid black; text-align: center"  >
+                <p> Exercise Name: {{ exercise.name }} </p>
+            </div>   
+        </div>
+        <div class="col-sm">
+            <div style="border: 1px solid black" class="text-center">
+                <p> Target Area: {{ exercise.target_area }} </p>
+                <p> Difficulty: {{ exercise.difficulty }} </p>    
+            </div>   
+        </div>
+    </div>
+</div>
 
 {% endfor %}
 {%  endblock %}
