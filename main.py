@@ -27,10 +27,15 @@ exercises = [
 
 
 
+# Return List of exercises categories
+@app.route("/exercises-category")
+def get_exercise_categories():
+    return render_template("exercise_category.html", exercises=exercises)
+
 # Return List of exercises
 @app.route("/exercises")
 def get_exercises():
-    return render_template("exercise_category.html", exercises=exercises)
+    return render_template("exercises.html", exercises=exercises)
 
 # Show Exercise by ID
 @app.route("/exercise/<int:exercise_id>")
