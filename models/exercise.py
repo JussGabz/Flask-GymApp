@@ -17,10 +17,10 @@ class Exercise(Base):
     difficulty = Column("difficulty", String)
     time_created = Column("time_created", DateTime(timezone=True), server_default=func.now())
 
-    exercises = relationship("WorkoutPlan", secondary="plan_exercise")
+    workoutplans = relationship("WorkoutPlan", secondary="plan_exercise", back_populates='exercises')
 
     def __repr__(self):
-        return f"ID: ({self.id}) Exercise: {self.name}"
+        return f"Exercise ID: ({self.id}) Exercise: {self.name}"
     
     # Make as class Method - Helps to call without instantiating
     @classmethod
