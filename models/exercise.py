@@ -2,7 +2,7 @@ from sqlalchemy import Column, Integer, String, DateTime
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 from models.engine import Session
-from models.associations import plan_exercise
+from models.associations import plan_exercise # Import for workoutplan relationship
 from . import Base
 
 # This session will be responsible for handling database connections

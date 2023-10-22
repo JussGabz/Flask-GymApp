@@ -2,16 +2,10 @@ from sqlalchemy import Column, Integer, String, DateTime, Table, ForeignKey
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 from models.engine import Session
+from models.associations import plan_exercise # Import for exercises relationship
 from . import Base
 
 session = Session()
-
-plan_exercise = Table(
-    "plan_exercise",
-    Base.metadata,
-    Column("exercise_id", ForeignKey("exercises.id")),
-    Column("plan_id", ForeignKey("workout_plan.id"))
-)
 
 class WorkoutPlan(Base):
     __tablename__ = "workout_plan"
