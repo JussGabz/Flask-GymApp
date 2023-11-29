@@ -20,17 +20,19 @@ class WorkoutPlan(Base):
     def __repr__(self):
         return f"Workout Plan ID: {self.id}, Name: {self.name}"
     
-    def create_workout_plan(self):
-        session.add(self)
-        session.commit()
+    def create_workout_plan(self, session=session):
+        with session:
+            session.add(self)
+            session.commit()
 
     @classmethod
-    def select_workout_plan(cls, name):
+    def select_workout_plan(cls, name, session=session):
         # Query Workout Plan by Name
-        workout_plan = session.query(WorkoutPlan).filter_by(name=name).first()
+        with session:
+            workout_plan = session.query(WorkoutPlan).filter_by(name=name).first()
         return workout_plan
 
-    def update_workout_plan(self, session, name):
+    def update_workout_plan(self, name, session=session):
         if name:
             self.name = name
         
@@ -40,10 +42,26 @@ class WorkoutPlan(Base):
     def delete_workout_plan(self, session):
         session.delete(self)
         session.commit()
+    
+    def get_exercises(self, session=session):
+        workout_plan = WorkoutPlan.select_workout_plan(name=self.name, session=session)
 
-    def add_exercises(self, session, exercises):
+        if workout_plan.exercises is None:
+            return []
+
+        return workout_plan.exercises
+
+
+    def add_exercises(self, exercises, session=session):
+        # TODO - CHeck if exercises exist first before adding exercise
+
+        
         with session:
+            session.add(self)
+            for exercise in exercises:
+                session.add(exercise)
             self.exercises = exercises
+
             session.commit()
         return "Exercise Added"
 
