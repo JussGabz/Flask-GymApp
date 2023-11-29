@@ -11,23 +11,21 @@
     </div>
 </div>
 
-{% for exercise in exercises %}
-
 <div class="container"> 
     <div class="row" style="padding-bottom: 10px;">
         <div class="col-4" style="padding-bottom: 10px;">
             <div style="border: 1px solid black; text-align: center"  >
                 <p> Exercise Name: {{ exercise.name }} </p>
+                <p> Target Area: {{ exercise.target_area }} </p>
+                <p> Difficulty: {{ exercise.difficulty }} </p>    
             </div>   
         </div>
         <div class="col-8">
             <div style="border: 1px solid black" class="text-center">
-                <p> Target Area: {{ exercise.target_area }} </p>
-                <p> Difficulty: {{ exercise.difficulty }} </p>    
+                <p> Video </p>
             </div>   
         </div>
     </div>
 </div>
 
-{% endfor %}
 {%  endblock %}
